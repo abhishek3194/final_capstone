@@ -1,15 +1,13 @@
 package com.example.poornima.clickforchange;
 
-<<<<<<< HEAD
 import android.Manifest;
 import android.content.Context;
-=======
 import android.app.Activity;
->>>>>>> 464b0569c1d556c11d3f525388996d6b3e6ed2f0
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -123,8 +121,6 @@ public class NewsFeedActivity extends AppCompatActivity {
                     .commit();
         }
 
-<<<<<<< HEAD
-=======
         GPSTracker gps = new GPSTracker(this);
         if(gps.canGetLocation())
         {
@@ -139,7 +135,6 @@ public class NewsFeedActivity extends AppCompatActivity {
             gps.showSettingsAlert();
         }
 
->>>>>>> 464b0569c1d556c11d3f525388996d6b3e6ed2f0
     }
 
 
@@ -191,8 +186,7 @@ public class NewsFeedActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-
-<<<<<<< HEAD
+        Bitmap photo;
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Uri takenPhotoUri = getPhotoFileUri(photoFileName);
@@ -209,26 +203,18 @@ public class NewsFeedActivity extends AppCompatActivity {
         } else {
             photo = null;
         }
-=======
             ImageView imageView = (ImageView)findViewById(R.id.list_item_icon);
 
             Log.e("CameraDemo", "Pic saved");
->>>>>>> 464b0569c1d556c11d3f525388996d6b3e6ed2f0
 
+        imageView = (ImageView) findViewById(R.id.list_item_icon);
 
-        ImageView imageView = (ImageView) findViewById(R.id.list_item_icon);
-
-<<<<<<< HEAD
         Log.e("CameraDemo", "Pic saved");
-=======
-        Bitmap photo=null;
+        photo = null;
 
->>>>>>> 464b0569c1d556c11d3f525388996d6b3e6ed2f0
 
         if (resultCode == RESULT_OK) {
-
-<<<<<<< HEAD
-        //Log.v("code",encoded);
+            //Log.v("code",encoded);
 
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -241,8 +227,9 @@ public class NewsFeedActivity extends AppCompatActivity {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
+
         Location location = (Location) lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-=======
+
             if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
 
                 if(photo!=null)
@@ -254,7 +241,6 @@ public class NewsFeedActivity extends AppCompatActivity {
                     photo = BitmapFactory.decodeFile(takenPhotoUri.getPath());
                     // RESIZE BITMAP, see section below
                     // Load the taken image into a preview
->>>>>>> 464b0569c1d556c11d3f525388996d6b3e6ed2f0
 
                     Log.e(APP_TAG, image_file.getAbsolutePath());
                     geoTag(image_file.getAbsolutePath(), latitude, longitude);
