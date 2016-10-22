@@ -2,9 +2,9 @@ package Utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,19 +14,16 @@ import android.widget.TextView;
 
 import com.example.poornima.clickforchange.R;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * Created by poornima on 13/10/16.
  */
 public class FeedAdapter extends BaseAdapter{
 
-    private String [] result;
+    private JSONArray result;
     Activity activity;
 
 
@@ -44,12 +41,17 @@ public class FeedAdapter extends BaseAdapter{
     final String DATE_TIME = "date_time";
     final String NUM_REACTIONS = "num_reactions";
 
+     String IP;
+
+    final String TAG = "ADAPTER";
+
     private static LayoutInflater inflater=null;
 
 
-    public FeedAdapter(Activity mainActivity, String[] prblmList) {
+    public FeedAdapter(Activity mainActivity, JSONArray prblmList,Intent intent) {
         // TODO Auto-generated constructor stub
         result=prblmList;
+        //Log.e(TAG, result.toString());
         activity=mainActivity;
         //imageId=prgmImages;
         inflater = ( LayoutInflater )activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -60,7 +62,7 @@ public class FeedAdapter extends BaseAdapter{
     @Override
     public int getCount() {
         // TODO Auto-generated method stub
-        return result.length;
+        return result.length();
     }
 
     @Override
@@ -90,7 +92,7 @@ public class FeedAdapter extends BaseAdapter{
 
         JSONObject problemObject = null;
         try {
-            problemObject = new JSONObject(result[i]);
+            problemObject = result.getJSONObject(i);
             path = problemObject.getString(PROB_IMG);
 
             user_id = problemObject.getString(USER_ID);
@@ -113,35 +115,13 @@ public class FeedAdapter extends BaseAdapter{
        ImageView problemPic= (ImageView) rowView.findViewById(R.id.list_item_icon);
 
 
-
-        description.setText(user_id+latitude+longitude);
+        String test = user_id+" "+latitude+" "+ longitude;
+        Log.e("HiPoornima",test);
+        description.setText(user_id+'\n'+latitude+'\n'+longitude);
 
 
         imageLoader.DisplayImage(path, problemPic);
 
         return rowView;
-    }
-
-
-    public class ImageDownloader extends AsyncTask<String,Void,Void>
-    {
-
-        @Override
-        protected Void doInBackground(String... params) {
-
-
-            URL url = null;
-
-            try {
-                url = new URL(params[0]);
-                bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-           return null;
-        }
     }
 }

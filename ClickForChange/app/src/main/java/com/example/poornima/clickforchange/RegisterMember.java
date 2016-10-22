@@ -114,7 +114,7 @@ public class RegisterMember extends ActionBarActivity implements Communication {
         if(AdditionStatusText.equals("Success"))
         {
             Toast.makeText(this,"Registered successfully",Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, NewsFeedActivity.class);
+            Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
         }
 

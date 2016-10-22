@@ -7,6 +7,7 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -33,7 +34,13 @@ import CommunicationInterface.Communication;
 
             String statusText = null;
 
+            //TO BE REMOVED
+
+
             try{
+
+                String IP = String.valueOf(InetAddress.getLocalHost());
+                String SERVER = "http://"+IP+"/Click4Change/";
 
                 String username = params[0];
                 String password = params[1];
@@ -41,7 +48,7 @@ import CommunicationInterface.Communication;
                 String emailAddr = params[3];
                 String gender = params[4];
 
-                String link=ServerConfig.SERVER+"addNewMember.php";
+                String link=SERVER+"addNewMember.php";
                 String data  = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8");
                 data += "&" + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8");
                 data += "&" + URLEncoder.encode("phone", "UTF-8") + "=" + URLEncoder.encode(phone, "UTF-8");

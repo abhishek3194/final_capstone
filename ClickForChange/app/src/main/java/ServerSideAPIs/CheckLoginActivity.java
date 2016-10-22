@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -42,6 +43,9 @@ public class CheckLoginActivity extends AsyncTask<String,Void,String> {
     protected String doInBackground(String... params) {
 
         try{
+
+            String IP = String.valueOf(InetAddress.getLocalHost());
+            //String SERVER = "http://"+IP+"/Click4Change/";
 
             String username = params[0];
 

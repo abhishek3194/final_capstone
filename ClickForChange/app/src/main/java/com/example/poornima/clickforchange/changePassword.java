@@ -43,7 +43,7 @@ public class changePassword extends AppCompatActivity {
 
                 if(oldPassString.matches("") || newPassString.matches("") || conPassString.matches(""))
                 {
-                    Toast.makeText(changePassword.this , "All fileds mandatory" ,Toast.LENGTH_SHORT ).show();
+                    Toast.makeText(changePassword.this , "All fields mandatory" ,Toast.LENGTH_SHORT ).show();
                 }
                 // todo Add code to check that old password is same from the dabatabse
                 else
@@ -52,7 +52,7 @@ public class changePassword extends AppCompatActivity {
                     {
                         Toast.makeText(changePassword.this , "Password Changed" ,Toast.LENGTH_SHORT ).show();
 
-                        Intent intent = new Intent(changePassword.this, NewsFeedActivity.class);
+                        Intent intent = new Intent(changePassword.this, HomeActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }

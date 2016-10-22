@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -46,7 +47,10 @@ public class UploadClickedImage extends AsyncTask<Void,Void,String>{
 
 
         try{
-            String link=ServerConfig.SERVER+"upload.php";
+
+            String IP = String.valueOf(InetAddress.getLocalHost());
+            String SERVER = "http://"+IP+"/Click4Change/";
+            String link=SERVER+"upload.php";
             String data  = URLEncoder.encode("image", "UTF-8") + "=" + URLEncoder.encode(encodeImage, "UTF-8");
             data += "&" + URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(user_id, "UTF-8");
             data += "&" + URLEncoder.encode("latitude", "UTF-8") + "=" + URLEncoder.encode(String.valueOf(latitude), "UTF-8");

@@ -1,8 +1,12 @@
 package com.example.poornima.clickforchange;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
@@ -14,14 +18,26 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+
+import ServerSideAPIs.ServerConfig;
+import Utils.ImageLoader;
+
 public class NewsDetail extends ActionBarActivity {
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_detail);
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new PlaceholderFragment())
@@ -58,13 +74,30 @@ public class NewsDetail extends ActionBarActivity {
      */
     public static class PlaceholderFragment extends Fragment {
 
+        final String PROB_ID = "prob_id";
+        final String PROB_IMG = "prob_image";
+        final String PROB_TYPE = "prob_type";
+        final String USER_ID = "user_id";
+        final String LOC_ID = "loc_id";
+        final String LATITUDE = "latitude";
+        final String LONGITUDE = "longitude";
+        final String DATE_TIME = "date_time";
+        final String NUM_REACTIONS = "num_reactions";
+
+        String path;
+
+        ImageLoader imageLoader;
+
+
         private static final String LOG_TAG = PlaceholderFragment.class.getSimpleName();
 
-        private static final String FORECAST_HASH_TAG = "#sunshine";
+        private static final String FORECAST_HASH_TAG = "#ClickForChange!";
 
-        private String mForecast;
+        private String feed_detail;
 
         public PlaceholderFragment() {
+
+            imageLoader=new ImageLoader(this.getContext());
 
             setHasOptionsMenu(true);
         }
@@ -80,8 +113,38 @@ public class NewsDetail extends ActionBarActivity {
 
             if(intent!=null && intent.hasExtra(Intent.EXTRA_TEXT))
             {
-                mForecast = intent.getStringExtra(Intent.EXTRA_TEXT);
-                ((TextView)rootView.findViewById(R.id.detail_text)).setText(mForecast);
+                feed_detail = intent.getStringExtra(Intent.EXTRA_TEXT);
+
+                path = null;
+
+                String user_id = null;
+
+                double latitude = 0;
+
+                double longitude = 0;
+
+
+                try {
+                    JSONObject problemObject = new JSONObject(feed_detail);
+
+                    path = problemObject.getString(PROB_IMG);
+
+                    user_id = problemObject.getString(USER_ID);
+
+                    latitude = problemObject.getDouble(LATITUDE);
+
+                    longitude = problemObject.getDouble(LONGITUDE);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                String detail_feed_item = user_id+'\n'+latitude+'\n'+longitude;
+
+                ((TextView)rootView.findViewById(R.id.detail_text)).setText(detail_feed_item);
+
+                  ImageView problemPic = (ImageView) rootView.findViewById(R.id.detail_problemPic);
+
+                  imageLoader.DisplayImage(path, problemPic);
             }
 
             return rootView;
@@ -113,10 +176,22 @@ public class NewsDetail extends ActionBarActivity {
         {
             Intent share_intent = new Intent(Intent.ACTION_SEND);
             share_intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-            share_intent.setType("text/plain");
-            share_intent.putExtra(Intent.EXTRA_TEXT,mForecast+FORECAST_HASH_TAG);
-
+            share_intent.setType("image/jpeg");
+            String url = ServerConfig.SERVER+path;
+            Bitmap bmp = imageLoader.getBitmap(url);
+            share_intent.putExtra(Intent.EXTRA_TEXT,feed_detail+FORECAST_HASH_TAG);
+            if(bmp!=null)
+            {
+                share_intent.putExtra(Intent.EXTRA_STREAM, getImageUri(this.getContext(), bmp));
+            }
             return share_intent;
+        }
+
+        public Uri getImageUri(Context inContext, Bitmap inImage) {
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+            String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+            return Uri.parse(path);
         }
     }
 }

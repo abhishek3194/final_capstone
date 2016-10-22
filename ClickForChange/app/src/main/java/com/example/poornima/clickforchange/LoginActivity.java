@@ -2,7 +2,9 @@ package com.example.poornima.clickforchange;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -38,21 +40,37 @@ public class LoginActivity extends Activity implements Communication {
 
     public static File dataFolder;
 
+    public static final String USER_KEY = "user_key";
+    public static final String PASS_KEY = "pass_key";
+    public static final String LOGIN_STATUS = "login_status";
+
     public final int PERMISSIONS_REQUEST_WRITE_STORAGE = 0;
 
     private int PERMISSIONS_REQUEST_READ_STORAGE;
 
+    protected SharedPreferences sharedCredentialPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        //creating directory on the device
+        sharedCredentialPreferences = getSharedPreferences("Credentials", Context.MODE_PRIVATE);
 
+            if(this.isLoggedIn())
+            {
+                Intent intent = new Intent(this, HomeActivity.class).putExtra(Intent.EXTRA_TEXT,statusText);
+                startActivity(intent);
+                finish();
+            }
+        //checking the credentials file
         imagesFolder = new File(Environment.getExternalStorageDirectory(), "/ClickForChange");
-        imagesFolder.mkdirs();
+
 
 
         dataFolder = new File(Environment.getExternalStorageDirectory(), "/ClickForChange/data");
-        dataFolder.mkdirs();
+
+
+        Log.e(LOG_TAG,"Login Activity!");
+
 
         int writePermissionCheck = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -118,6 +136,11 @@ public class LoginActivity extends Activity implements Communication {
     }
 
 
+    public boolean isLoggedIn(){
+        return sharedCredentialPreferences.getBoolean(LOGIN_STATUS, false);
+    }
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -129,11 +152,15 @@ public class LoginActivity extends Activity implements Communication {
 
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    imagesFolder = new File(Environment.getExternalStorageDirectory(), "/ClickForChange/");
+                if(!imagesFolder.exists())
+                {
                     imagesFolder.mkdirs();
+                }
 
-                    dataFolder = new File(Environment.getExternalStorageDirectory(), "/ClickForChange/data");
+                if(!dataFolder.exists())
+                {
                     dataFolder.mkdirs();
+                }
 
                     if (!imagesFolder.mkdirs()) {
                         Log.e(LOG_TAG, "Directory not created");
@@ -226,8 +253,14 @@ public class LoginActivity extends Activity implements Communication {
 
         if(statusText.equals("Successful"))
         {
+            SharedPreferences.Editor editor = sharedCredentialPreferences.edit();
+            editor.putString(USER_KEY, username);
+            editor.putString(PASS_KEY, password);
+            editor.putBoolean(LOGIN_STATUS, true);
+            editor.commit();
+
             UserData.SESSION_USER = usernameField.getText().toString();
-            Intent intent = new Intent(this, NewsFeedActivity.class).putExtra(Intent.EXTRA_TEXT,statusText);
+            Intent intent = new Intent(this, HomeActivity.class).putExtra(Intent.EXTRA_TEXT,statusText);
             startActivity(intent);
             finish();
             //Toast.makeText(this,"Correct!",Toast.LENGTH_SHORT).show();
